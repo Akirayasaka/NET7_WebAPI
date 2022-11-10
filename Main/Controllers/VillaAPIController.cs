@@ -1,4 +1,5 @@
-﻿using Main.Models;
+﻿using Main.Logging;
+using Main.Models;
 using Main.Models.Dto;
 using Main.Store;
 using Microsoft.AspNetCore.JsonPatch;
@@ -10,9 +11,9 @@ namespace Main.Controllers
     [ApiController]
     public class VillaAPIController : ControllerBase
     {
-        private readonly ILogger<VillaAPIController> _logger;
+        private readonly ILogging _logger;
 
-        public VillaAPIController(ILogger<VillaAPIController> logger)
+        public VillaAPIController(ILogging logger)
         {
             _logger = logger;
         }
@@ -20,7 +21,7 @@ namespace Main.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<VillaDTO>> GetVillas()
         {
-            _logger.LogInformation("Getting all villas");
+            _logger.Log("Getting all villas", string.Empty);
             return Ok(VillaStore.villaList);
         }
 
@@ -32,7 +33,7 @@ namespace Main.Controllers
         {
             if (id == 0) 
             {
-                _logger.LogError($"Get Villa Error with Id: {id}");
+                _logger.Log($"Get Villa Error with Id: {id}", "error");
                 return BadRequest();
             }
             VillaDTO villa = VillaStore.villaList.FirstOrDefault(x => x.Id == id);
