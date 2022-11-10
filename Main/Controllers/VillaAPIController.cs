@@ -16,6 +16,9 @@ namespace Main.Controllers
         }
 
         [HttpGet("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(VillaDTO))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<VillaDTO> GetVilla(int id)
         {
             if (id == 0) { return BadRequest(); }
