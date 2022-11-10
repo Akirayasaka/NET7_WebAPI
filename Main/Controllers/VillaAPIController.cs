@@ -61,5 +61,27 @@ namespace Main.Controllers
             // reutrn 201
             //return CreatedAtRoute("GetVilla", new { id = villaDTO.Id }, villaDTO);
         }
+
+        [HttpDelete("{id:int}", Name = "DeleteVilla")]
+        public IActionResult DeleteVilla(int id)
+        {
+            if (id == 0)
+            {
+                return BadRequest();
+            }
+            var villa = VillaStore.villaList.FirstOrDefault(x => x.Id == id);
+            if (villa== null)
+            {
+                return NotFound();
+            }
+
+            VillaStore.villaList.Remove(villa);
+
+            // Cutome Message for Response
+            return Ok(new { Success = true, Message = "OK" });
+
+            // return 204
+            //return NoContent();
+        }
     }
 }
