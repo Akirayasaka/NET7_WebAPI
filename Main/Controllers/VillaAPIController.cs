@@ -34,6 +34,11 @@ namespace Main.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<VillaDTO> CreateVilla([FromBody]VillaDTO villaDTO) 
         {
+
+            if (!ModelState.IsValid) 
+            { 
+                return BadRequest(ModelState); 
+            }   
             if (villaDTO == null)
             {
                 return BadRequest(villaDTO);
