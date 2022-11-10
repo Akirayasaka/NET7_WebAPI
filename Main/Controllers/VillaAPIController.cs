@@ -4,6 +4,7 @@ using Main.Models;
 using Main.Models.Dto;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Main.Controllers
 {
@@ -158,7 +159,7 @@ namespace Main.Controllers
             {
                 return BadRequest();
             }
-            Villa villa = _db.Villas.FirstOrDefault(x => x.Id == id);
+            Villa villa = _db.Villas.AsNoTracking().FirstOrDefault(x => x.Id == id);
             if (villa == null)
             {
                 return NotFound();
