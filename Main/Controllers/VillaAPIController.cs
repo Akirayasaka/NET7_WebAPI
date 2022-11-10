@@ -1,4 +1,5 @@
-﻿using Main.Data;
+﻿using AutoMapper;
+using Main.Data;
 using Main.Logging;
 using Main.Models;
 using Main.Models.Dto;
@@ -13,17 +14,20 @@ namespace Main.Controllers
     public class VillaAPIController : ControllerBase
     {
         private readonly ApplicationDbContext _db;
+        private readonly IMapper _mapper;
 
-        public VillaAPIController(ApplicationDbContext db)
+        public VillaAPIController(ApplicationDbContext db, IMapper mapper)
         {
             _db = db;
+            _mapper = mapper;
         }
 
         [HttpGet]
         [ProducesResponseType(typeof(int), 200)]
         public async Task<ActionResult<IEnumerable<VillaDTO>>> GetVillas()
         {
-            return Ok(await _db.Villas.ToListAsync());
+            IEnumerable<Villa> villaList = await _db.Villas.ToListAsync();
+            return Ok(_mapper.Map<List<VillaDTO>>(villaList));
         }
 
         [HttpGet("{id:int}", Name = "GetVilla")]
@@ -38,7 +42,7 @@ namespace Main.Controllers
             }
             Villa villa = await _db.Villas.FirstOrDefaultAsync(x => x.Id == id);
             if (villa == null) { return NotFound(); }
-            return Ok(villa);
+            return Ok(_mapper.Map<VillaDTO>(villa));
         }
 
         [HttpPost]
@@ -46,36 +50,37 @@ namespace Main.Controllers
         //[ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<VillaDTO>> CreateVilla([FromBody] VillaCreateDTO villaDTO)
+        public async Task<ActionResult<VillaDTO>> CreateVilla([FromBody] VillaCreateDTO createDTO)
         {
 
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            if (await _db.Villas.FirstOrDefaultAsync(x => x.Name.ToLower() == villaDTO.Name.ToLower()) != null)
+            if (await _db.Villas.FirstOrDefaultAsync(x => x.Name.ToLower() == createDTO.Name.ToLower()) != null)
             {
                 ModelState.AddModelError("ErrorMessage", "Villa Name already Exists!");
                 return BadRequest(ModelState);
             }
-            if (villaDTO == null)
+            if (createDTO == null)
             {
-                return BadRequest(villaDTO);
+                return BadRequest(createDTO);
             }
- 
 
-            Villa model = new()
-            {
-                Name = villaDTO.Name,
-                Details = villaDTO.Details,
-                Amenity = villaDTO.Amenity,
-                Sqft = villaDTO.Sqft,
-                Occupancy = villaDTO.Occupancy,
-                Rate = villaDTO.Rate,
-                ImageUrl = villaDTO.ImageUrl,
-                CreatedDate = DateTime.Now,
-                UpdatedDate = DateTime.Now
-            };
+            Villa model = _mapper.Map<Villa>(createDTO);
+
+            //Villa model = new()
+            //{
+            //    Name = createDTO.Name,
+            //    Details = createDTO.Details,
+            //    Amenity = createDTO.Amenity,
+            //    Sqft = createDTO.Sqft,
+            //    Occupancy = createDTO.Occupancy,
+            //    Rate = createDTO.Rate,
+            //    ImageUrl = createDTO.ImageUrl,
+            //    CreatedDate = DateTime.Now,
+            //    UpdatedDate = DateTime.Now
+            //};
 
             await _db.Villas.AddAsync(model);
             await _db.SaveChangesAsync();
@@ -114,28 +119,32 @@ namespace Main.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateVilla(int id, [FromBody] VillaUpdateDTO villaDTO)
+        public async Task<IActionResult> UpdateVilla(int id, [FromBody] VillaUpdateDTO updateDTO)
         {
-            if (id == 0 || id != villaDTO.Id || villaDTO == null)
+            if (id == 0 || id != updateDTO.Id || updateDTO == null)
             {
                 return BadRequest();
             }
-            Villa villa = await _db.Villas.FirstOrDefaultAsync(x => x.Id == id);
+            Villa villa = await _db.Villas.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
             if (villa == null)
             {
                 return NotFound();
             }
 
-            villa.Amenity = villaDTO.Amenity;
-            villa.Name = villaDTO.Name;
-            villa.Rate = villaDTO.Rate;
-            villa.Sqft = villaDTO.Sqft;
-            villa.Occupancy = villaDTO.Occupancy;
-            villa.ImageUrl = villaDTO.ImageUrl;
-            villa.UpdatedDate = DateTime.Now;
+            //villa.Amenity = updateDTO.Amenity;
+            //villa.Name = updateDTO.Name;
+            //villa.Rate = updateDTO.Rate;
+            //villa.Sqft = updateDTO.Sqft;
+            //villa.Occupancy = updateDTO.Occupancy;
+            //villa.ImageUrl = updateDTO.ImageUrl;
+            //villa.UpdatedDate = DateTime.Now;
+
+            Villa model = _mapper.Map<Villa>(updateDTO);
+            model.UpdatedDate = DateTime.UtcNow;
+
             try
             {
-                _db.Villas.Update(villa);
+                _db.Villas.Update(model);
                 await _db.SaveChangesAsync();
                 return Ok();
             }
@@ -162,32 +171,33 @@ namespace Main.Controllers
                 return NotFound();
             }
 
-            VillaUpdateDTO villaDTO = new()
-            {
-                Id = villa.Id,
-                Name = villa.Name,
-                Amenity = villa.Amenity,
-                Details = villa.Details,
-                ImageUrl = villa.ImageUrl,
-                Occupancy = villa.Occupancy,
-                Rate = villa.Rate,
-                Sqft = villa.Sqft
-            };
+            VillaUpdateDTO villaDTO = _mapper.Map<VillaUpdateDTO>(villa);
+            //VillaUpdateDTO villaDTO = new()
+            //{
+            //    Id = villa.Id,
+            //    Name = villa.Name,
+            //    Amenity = villa.Amenity,
+            //    Details = villa.Details,
+            //    ImageUrl = villa.ImageUrl,
+            //    Occupancy = villa.Occupancy,
+            //    Rate = villa.Rate,
+            //    Sqft = villa.Sqft
+            //};
 
             // referto: https://jsonpatch.com/
             patchDTO.ApplyTo(villaDTO, ModelState);
-
-            Villa model = new()
-            {
-                Id = villaDTO.Id,
-                Name = villaDTO.Name,
-                Amenity = villaDTO.Amenity,
-                Details = villaDTO.Details,
-                ImageUrl = villaDTO.ImageUrl,
-                Occupancy= villaDTO.Occupancy,
-                Rate = villaDTO.Rate,
-                Sqft = villaDTO.Sqft
-            };
+            Villa model = _mapper.Map<Villa>(villaDTO);
+            //Villa model = new()
+            //{
+            //    Id = villaDTO.Id,
+            //    Name = villaDTO.Name,
+            //    Amenity = villaDTO.Amenity,
+            //    Details = villaDTO.Details,
+            //    ImageUrl = villaDTO.ImageUrl,
+            //    Occupancy = villaDTO.Occupancy,
+            //    Rate = villaDTO.Rate,
+            //    Sqft = villaDTO.Sqft
+            //};
 
             _db.Villas.Update(model);
             await _db.SaveChangesAsync();
