@@ -83,5 +83,27 @@ namespace Main.Controllers
             // return 204
             //return NoContent();
         }
+
+        // Put: For update Multiple Properties
+        [HttpPut("{id:int}", Name = "UpdateVilla")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult UpdateVilla(int id, [FromBody]VillaDTO villaDTO)
+        {
+            if (id == 0 || id != villaDTO.Id || villaDTO == null)
+            {
+                return BadRequest();
+            }
+            var villa = VillaStore.villaList.FirstOrDefault(x => x.Id == id);
+            if (villa == null)
+            {
+                return NotFound();
+            }
+            villa.Name= villaDTO.Name;
+            villa.Occupancy= villaDTO.Occupancy;
+            villa.Sqft= villaDTO.Sqft;
+            return Ok();
+        }
     }
 }
