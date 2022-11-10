@@ -38,7 +38,12 @@ namespace Main.Controllers
             if (!ModelState.IsValid) 
             { 
                 return BadRequest(ModelState); 
-            }   
+            }
+            if (VillaStore.villaList.FirstOrDefault(x => x.Name.ToLower() == villaDTO.Name.ToLower()) != null) 
+            {
+                ModelState.AddModelError("ErrorMessage", "Villa Name already Exists!");
+                return BadRequest(ModelState);
+            }
             if (villaDTO == null)
             {
                 return BadRequest(villaDTO);
