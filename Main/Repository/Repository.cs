@@ -55,7 +55,6 @@ namespace Main.Repository
             await SaveAsync();
         }
 
-
         public async Task SaveAsync()
         {
             await _db.SaveChangesAsync();
