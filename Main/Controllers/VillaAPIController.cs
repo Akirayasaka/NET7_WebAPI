@@ -10,9 +10,17 @@ namespace Main.Controllers
     [ApiController]
     public class VillaAPIController : ControllerBase
     {
+        private readonly ILogger<VillaAPIController> _logger;
+
+        public VillaAPIController(ILogger<VillaAPIController> logger)
+        {
+            _logger = logger;
+        }
+
         [HttpGet]
         public ActionResult<IEnumerable<VillaDTO>> GetVillas()
         {
+            _logger.LogInformation("Getting all villas");
             return Ok(VillaStore.villaList);
         }
 
@@ -22,7 +30,11 @@ namespace Main.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<VillaDTO> GetVilla(int id)
         {
-            if (id == 0) { return BadRequest(); }
+            if (id == 0) 
+            {
+                _logger.LogError($"Get Villa Error with Id: {id}");
+                return BadRequest();
+            }
             VillaDTO villa = VillaStore.villaList.FirstOrDefault(x => x.Id == id);
             if (villa == null) { return NotFound(); }
             return Ok(villa);
