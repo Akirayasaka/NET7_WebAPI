@@ -14,7 +14,10 @@ builder.Services.AddControllers(option => { }).AddNewtonsoftJson();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSingleton<ILogging, Logging>();
+
+#region Custom Log
+//builder.Services.AddSingleton<ILogging, Logging>();
+#endregion
 
 var app = builder.Build();
 
