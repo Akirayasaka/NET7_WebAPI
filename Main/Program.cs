@@ -1,3 +1,4 @@
+using Main;
 using Main.Data;
 using Main.Logging;
 using Microsoft.EntityFrameworkCore;
@@ -12,12 +13,14 @@ var builder = WebApplication.CreateBuilder(args);
 //builder.Host.UseSerilog();
 #endregion
 
-#region 建立資料庫連線
+// 建立資料庫連線
 builder.Services.AddDbContext<ApplicationDbContext>(option =>
 {
     option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection"));
 });
-#endregion
+
+// AutoMapper設定
+builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 
 builder.Services.AddControllers(option => { }).AddNewtonsoftJson();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
