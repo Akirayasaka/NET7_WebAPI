@@ -11,9 +11,11 @@ namespace Main.Repository
         {
             _db = db;
             Villa = new VillaRepository(_db);
+            VillaNumber= new VillaNumberRepository(_db);
         }
 
         public IVillaRepository Villa { get; private set; }
+        public IVillaNumberRepository VillaNumber { get; private set; }
 
         public void Dispose() => _db.Dispose();
 
