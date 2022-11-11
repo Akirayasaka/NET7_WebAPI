@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Main.Models;
-using Main.Models.Dto;
+using Main.Models.Dto.Villa;
 
 namespace Main
 {

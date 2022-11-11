@@ -1,5 +1,5 @@
 ﻿using Main.Models;
-using Main.Models.Dto;
+using Main.Models.Dto.Villa;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
