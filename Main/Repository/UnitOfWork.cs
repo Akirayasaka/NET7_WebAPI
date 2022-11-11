@@ -7,7 +7,7 @@ namespace Main.Repository
     {
         private readonly ApplicationDbContext _db;
 
-        public UnitOfWork(ApplicationDbContext db) 
+        public UnitOfWork(ApplicationDbContext db)
         {
             _db = db;
             Villa = new VillaRepository(_db);
