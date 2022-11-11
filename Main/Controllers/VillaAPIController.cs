@@ -109,7 +109,7 @@ namespace Main.Controllers
         }
 
         [HttpDelete("{id:int}", Name = "DeleteVilla")]
-        public async Task<IActionResult> DeleteVilla(int id)
+        public async Task<ActionResult<ApiResponse>> DeleteVilla(int id)
         {
             try
             {
@@ -149,8 +149,7 @@ namespace Main.Controllers
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     return BadRequest(_response);
                 }
-                Villa villa = await _unitOfWork.Villa.GetAsync(filter: x => x.Id == id, tracked: true);
-                if (villa == null)
+                if (await _unitOfWork.Villa.GetAsync(filter: x => x.Id == id) == null)
                 {
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.NotFound;

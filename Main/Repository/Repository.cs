@@ -26,7 +26,7 @@ namespace Main.Repository
         public async Task<T> GetAsync(Expression<Func<T, bool>> filter = null, bool tracked = true)
         {
             IQueryable<T> query = dbSet;
-            if (!tracked)
+            if (tracked)
             {
                 query = query.AsNoTracking();
             }
