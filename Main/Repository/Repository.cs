@@ -31,7 +31,7 @@ namespace Main.Repository
                 query = query.AsNoTracking();
             }
             if (filter != null)
-            {
+            {   
                 query = query.Where(filter);
             }
             return await query.FirstOrDefaultAsync();
