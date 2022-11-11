@@ -9,11 +9,13 @@ namespace Main.Data
         {
 
         }
-        // 對應資料庫Table名稱
+
+        #region 對應資料庫Table名稱
         public DbSet<Villa> Villas { get; set; }
+        public DbSet<VillaNumber> VillaNumbers { get; set; }
+        #endregion
 
-
-        //生成測試資料用
+        // Seed Test Data for Villa
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
