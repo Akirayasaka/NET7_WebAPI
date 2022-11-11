@@ -15,8 +15,15 @@ namespace Main.Controllers
         [ProducesResponseType(typeof(int), 200)]
         public async Task<ActionResult<IEnumerable<VillaDTO>>> GetVillas()
         {
-            IEnumerable<Villa> villaList = await _unitOfWork.Villa.GetAllAsync();
-            return Ok(_mapper.Map<List<VillaDTO>>(villaList));
+            try
+            {
+                IEnumerable<Villa> villaList = await _unitOfWork.Villa.GetAllAsync();
+                return Ok(_mapper.Map<List<VillaDTO>>(villaList));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("{id:int}", Name = "GetVilla")]
@@ -29,9 +36,17 @@ namespace Main.Controllers
             {
                 return BadRequest();
             }
-            Villa villa = await _unitOfWork.Villa.GetAsync(filter: x => x.Id == id);
-            if (villa == null) { return NotFound(); }
-            return Ok(_mapper.Map<VillaDTO>(villa));
+
+            try
+            {
+                Villa villa = await _unitOfWork.Villa.GetAsync(filter: x => x.Id == id);
+                if (villa == null) { return NotFound(); }
+                return Ok(_mapper.Map<VillaDTO>(villa));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]
@@ -56,13 +71,20 @@ namespace Main.Controllers
             }
 
             Villa model = _mapper.Map<Villa>(createDTO);
-            await _unitOfWork.Villa.CreateAsync(model);
+            try
+            {
+                await _unitOfWork.Villa.CreateAsync(model);
 
-            // return 200
-            return Ok(new { Success = true, Message = "" });
+                // return 200
+                return Ok(new { Success = true, Message = "" });
 
-            // reutrn 201
-            //return CreatedAtRoute("GetVilla", new { id = model.Id }, model);
+                // reutrn 201
+                //return CreatedAtRoute("GetVilla", new { id = model.Id }, model);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("{id:int}", Name = "DeleteVilla")]
@@ -78,13 +100,21 @@ namespace Main.Controllers
                 return NotFound();
             }
 
-            await _unitOfWork.Villa.RemoveAsync(villa);
+            try
+            {
+                await _unitOfWork.Villa.RemoveAsync(villa);
 
-            // Cutome Message for Response
-            return Ok(new { Success = true, Message = "OK" });
+                // Cutome Message for Response
+                return Ok(new { Success = true, Message = "OK" });
 
-            // return 204
-            //return NoContent();
+                // return 204
+                //return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
 
         // Put: For update multiple properties
@@ -105,7 +135,6 @@ namespace Main.Controllers
             }
 
             Villa model = _mapper.Map<Villa>(updateDTO);
-            model.UpdatedDate = DateTime.UtcNow;
 
             try
             {
@@ -141,13 +170,19 @@ namespace Main.Controllers
             patchDTO.ApplyTo(villaDTO, ModelState);
             Villa model = _mapper.Map<Villa>(villaDTO);
 
-            await _unitOfWork.Villa.UpdateAsync(model);
-
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                await _unitOfWork.Villa.UpdateAsync(model);
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                return Ok();
+            } catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
-            return Ok();
         }
     }
 }

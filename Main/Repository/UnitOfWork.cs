@@ -15,10 +15,7 @@ namespace Main.Repository
 
         public IVillaRepository Villa { get; private set; }
 
-        public void Dispose()
-        {
-            _db.Dispose();
-        }
+        public void Dispose() => _db.Dispose();
 
         public void Save()
         {
