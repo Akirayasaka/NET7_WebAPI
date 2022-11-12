@@ -94,6 +94,8 @@ namespace Main.Controllers
                 }
 
                 Villa model = _mapper.Map<Villa>(createDTO);
+                model.CreatedDate= DateTime.Now;
+                model.UpdatedDate= DateTime.Now;
                 await _unitOfWork.Villa.CreateAsync(model);
                 _response.Result = _mapper.Map<VillaDTO>(model);
                 _response.StatusCode = HttpStatusCode.Created;

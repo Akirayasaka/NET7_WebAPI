@@ -10,6 +10,10 @@ namespace Main.Models
 
         #region ForeignKey
         // Before Add ForeignKey, Delete current data form VillaNumber Table
+
+        /// <summary>
+        /// Villa Table ID
+        /// </summary>
         [ForeignKey("Villa")]
         public int VillaID { get; set; }
         public Villa Villa { get; set; }

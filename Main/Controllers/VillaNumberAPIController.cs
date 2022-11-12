@@ -78,6 +78,14 @@ namespace Main.Controllers
                     _response.Messages.Add("ErrorMessage: Villa Number already Exists!");
                     return BadRequest(_response);
                 }
+                if (await _unitOfWork.Villa.GetAsync(x => x.Id == createDTO.VillaID) == null)
+                {
+                    ModelState.AddModelError("ErrorMessage", "Villa Data is Not Exists!");
+                    _response.IsSuccess = false;
+                    _response.StatusCode = HttpStatusCode.BadRequest;
+                    _response.Messages.Add("ErrorMessage: Villa Data is Not Exists!");
+                    return BadRequest(_response);
+                }
                 if (createDTO == null)
                 {
                     _response.IsSuccess = false;
@@ -87,6 +95,8 @@ namespace Main.Controllers
                 }
 
                 VillaNumber model = _mapper.Map<VillaNumber>(createDTO);
+                model.CreatedDate = DateTime.Now;
+                model.UpdatedDate = DateTime.Now;
                 await _unitOfWork.VillaNumber.CreateAsync(model);
                 _response.Result = _mapper.Map<VillaNumberDTO>(model);
                 _response.StatusCode = HttpStatusCode.Created;
@@ -129,7 +139,7 @@ namespace Main.Controllers
         }
 
         [HttpPut("{id:int}", Name = "UpdateVillaNumber")]
-        public async Task<ActionResult<ApiResponse>> UpdateVillaNumber(int id, [FromBody]VillaNumberUpdateDTO updateDTO)
+        public async Task<ActionResult<ApiResponse>> UpdateVillaNumber(int id, [FromBody] VillaNumberUpdateDTO updateDTO)
         {
             try
             {
@@ -145,9 +155,17 @@ namespace Main.Controllers
                     _response.StatusCode = HttpStatusCode.NotFound;
                     return NotFound(_response);
                 }
+                if (await _unitOfWork.Villa.GetAsync(x => x.Id == updateDTO.VillaID) == null)
+                {
+                    ModelState.AddModelError("ErrorMessage", "Villa Data is Not Exists!");
+                    _response.IsSuccess = false;
+                    _response.StatusCode = HttpStatusCode.BadRequest;
+                    _response.Messages.Add("ErrorMessage: Villa Data is Not Exists!");
+                    return BadRequest(_response);
+                }
 
                 VillaNumber model = _mapper.Map<VillaNumber>(updateDTO);
-
+                model.UpdatedDate = DateTime.UtcNow;
                 await _unitOfWork.VillaNumber.UpdateAsync(model);
                 _response.StatusCode = HttpStatusCode.NoContent;
                 return Ok(_response);
