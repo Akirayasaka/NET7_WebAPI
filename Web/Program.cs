@@ -1,4 +1,6 @@
 using Web;
+using Web.Services;
+using Web.Services.IServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,7 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 
-
+builder.Services.AddHttpClient<IVillaService, VillaService>();
+builder.Services.AddScoped<IVillaService, VillaService>();
 
 var app = builder.Build();
 
