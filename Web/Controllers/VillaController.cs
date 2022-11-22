@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Data;
 using Web.Models;
 using Web.Models.Dto.Villa;
 using Web.Services.IServices;
@@ -67,6 +70,31 @@ namespace Web.Controllers
                     return RedirectToAction(nameof(IndexVilla));
                 }
             }
+            return View(model);
+        }
+
+        public async Task<IActionResult> DeleteVilla(int villaId)
+        {
+            var response = await _villaService.GetAsync<ApiResponse>(villaId);
+            if (response != null && response.IsSuccess)
+            {
+                VillaDTO model = JsonConvert.DeserializeObject<VillaDTO>(Convert.ToString(response.Result));
+                return View(model);
+            }
+            return NotFound();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteVilla(VillaDTO model)
+        {
+            var response = await _villaService.DeleteAsync<ApiResponse>(model.Id);
+            if (response != null && response.IsSuccess)
+            {
+                TempData["success"] = "Villa deleted successfully";
+                return RedirectToAction(nameof(IndexVilla));
+            }
+            TempData["error"] = "Error encountered.";
             return View(model);
         }
     }
