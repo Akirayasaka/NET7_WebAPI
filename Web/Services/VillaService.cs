@@ -31,7 +31,7 @@ namespace Web.Services
             return SendAsync<T>(new ApiRequest()
             {
                 ApiType= StaticDetails.ApiType.DELETE,
-                Url = villaUrl + "/api/villaAPI" + id
+                Url = villaUrl + "/api/villaAPI/" + id
             });
         }
 
@@ -49,7 +49,7 @@ namespace Web.Services
             return SendAsync<T>(new ApiRequest()
             {
                 ApiType = StaticDetails.ApiType.GET,
-                Url = villaUrl + "/api/villaAPI" + id
+                Url = villaUrl + "/api/villaAPI/" + id
             });
         }
 
@@ -59,7 +59,7 @@ namespace Web.Services
             {
                 ApiType = StaticDetails.ApiType.PUT,
                 Data = dto,
-                Url = villaUrl + "/api/villaAPI" + dto.Id
+                Url = villaUrl + "/api/villaAPI/" + dto.Id
             });
         }
     }
