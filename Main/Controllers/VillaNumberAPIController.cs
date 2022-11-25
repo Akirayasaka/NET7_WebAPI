@@ -17,7 +17,7 @@ namespace Main.Controllers
         {
             try
             {
-                IEnumerable<VillaNumber> villaNumberList = await _unitOfWork.VillaNumber.GetAllAsync();
+                IEnumerable<VillaNumber> villaNumberList = await _unitOfWork.VillaNumber.GetAllAsync(includeProperties: "Villa");
                 _response.Result = _mapper.Map<List<VillaNumberDTO>>(villaNumberList);
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);

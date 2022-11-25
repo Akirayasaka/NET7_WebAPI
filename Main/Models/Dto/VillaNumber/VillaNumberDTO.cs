@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Main.Models.Dto.Villa;
+using System.ComponentModel.DataAnnotations;
 
 namespace Main.Models.Dto.VillaNumber
 {
@@ -13,5 +14,6 @@ namespace Main.Models.Dto.VillaNumber
         [Required]
         public int VillaID { get; set; }
         public string SpecialDetails { get; set; }
+        public VillaDTO Villa { get; set; }
     }
 }
