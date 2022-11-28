@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using Web.Models;
+using Web.Models.Dto.Villa;
 using Web.Models.Dto.VillaNumber;
+using Web.Models.Dto.VM;
 
 namespace Web.Controllers
 {
@@ -19,5 +22,19 @@ namespace Web.Controllers
             }
             return View(list);
         }
+
+        public async Task<IActionResult> CreateVillaNumber()
+        {
+            VillaNumberCreateVM vm = new();
+            var response = await _villaService.GetAllAsync<ApiResponse>();
+            if (response != null && response.IsSuccess)
+            {
+                vm.VillaList = JsonConvert.DeserializeObject<List<VillaDTO>>(Convert.ToString(response.Result))
+                    .Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() });
+            }
+            return View(vm);
+        }
+
+        
     }
 }
