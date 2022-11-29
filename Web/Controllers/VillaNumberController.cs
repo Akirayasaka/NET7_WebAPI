@@ -35,6 +35,20 @@ namespace Web.Controllers
             return View(vm);
         }
 
-        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateVillaNumber(VillaNumberCreateDTO model)
+        {
+            if (ModelState.IsValid)
+            {
+                var response = await _villaNumberService.CreateAsync<ApiResponse>(model);
+                if (response != null && response.IsSuccess)
+                {
+                    return RedirectToAction(nameof(IndexVillaNumber));
+                }
+            }
+            return View(model);
+        }
+
     }
 }
