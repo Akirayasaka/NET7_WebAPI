@@ -54,6 +54,24 @@ namespace Web.Services
                 HttpResponseMessage apiResponse = null;
                 apiResponse = await client.SendAsync(message);
                 var apiContent = await apiResponse.Content.ReadAsStringAsync();
+                try
+                {
+                    ApiResponse ApiResponse = JsonConvert.DeserializeObject<ApiResponse>(apiContent);
+                    if( ApiResponse!=null &&( apiResponse.StatusCode==System.Net.HttpStatusCode.BadRequest 
+                        || apiResponse.StatusCode == System.Net.HttpStatusCode.NotFound))
+                    {
+                        ApiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                        ApiResponse.IsSuccess = false;
+                        var res = JsonConvert.SerializeObject(ApiResponse);
+                        var returnObj = JsonConvert.DeserializeObject<T>(res);
+                        return returnObj;
+                    }
+                }
+                catch (Exception e)
+                {
+                    var exceptionResponse = JsonConvert.DeserializeObject<T>(apiContent);
+                    return exceptionResponse;
+                }
                 var finalResult = JsonConvert.DeserializeObject<T>(apiContent);
                 return finalResult;
             }
