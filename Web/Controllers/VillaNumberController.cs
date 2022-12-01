@@ -47,6 +47,13 @@ namespace Web.Controllers
                 {
                     return RedirectToAction(nameof(IndexVillaNumber));
                 }
+                else
+                {
+                    if (response.Messages.Count > 0)
+                    {
+                        ModelState.AddModelError("ErrorMessages", response.Messages.FirstOrDefault());
+                    }
+                }
             }
             var resp = await _villaService.GetAllAsync<ApiResponse>();
             if (resp != null && resp.IsSuccess)
