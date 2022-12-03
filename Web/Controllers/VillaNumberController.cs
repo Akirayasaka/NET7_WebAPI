@@ -68,48 +68,84 @@ namespace Web.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> UpdateVilla(int villaId)
+        public async Task<IActionResult> UpdateVillaNumber(int villaId)
         {
+            VillaNumberUpdateVM vm = new();
             var response = await _villaNumberService.GetAsync<ApiResponse>(villaId);
             if (response != null && response.IsSuccess)
             {
                 VillaNumberDTO model = JsonConvert.DeserializeObject<VillaNumberDTO>(Convert.ToString(response.Result));
-                return View(_mapper.Map<VillaNumberUpdateDTO>(model));
+                vm.VillaNumber = _mapper.Map<VillaNumberUpdateDTO>(model);
             }
+
+            response = await _villaService.GetAllAsync<ApiResponse>();
+            if (response != null && response.IsSuccess)
+            {
+                vm.VillaList = JsonConvert.DeserializeObject<List<VillaDTO>>(Convert.ToString(response.Result))
+                    .Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() });
+                return View(vm);
+            }
+
             return NotFound();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateVilla(VillaNumberUpdateDTO model)
+        public async Task<IActionResult> UpdateVillaNumber(VillaNumberUpdateDTO model)
         {
             if (ModelState.IsValid)
             {
-                var response = await _villaNumberService.UpdateAsync<ApiResponse>(model);
+                var response = await _villaNumberService.UpdateAsync<ApiResponse>(model.VillaNumber);
                 if (response != null && response.IsSuccess)
                 {
                     return RedirectToAction(nameof(IndexVillaNumber));
                 }
+                else
+                {
+                    if (response.Messages.Count > 0)
+                    {
+                        ModelState.AddModelError("ErrorMessages", response.Messages.FirstOrDefault());
+                    }
+                }
+            }
+            var resp = await _villaService.GetAllAsync<ApiResponse>();
+            if (resp != null && resp.IsSuccess)
+            {
+                model.VillaList = JsonConvert.DeserializeObject<List<VillaDTO>>
+                    (Convert.ToString(resp.Result)).Select(i => new SelectListItem
+                    {
+                        Text = i.Name,
+                        Value = i.Id.ToString()
+                    }); ;
             }
             return View(model);
         }
 
         public async Task<IActionResult> DeleteVillaNumber(int villaId)
         {
+            VillaNumberDeleteVM vm = new();
             var response = await _villaNumberService.GetAsync<ApiResponse>(villaId);
             if (response != null && response.IsSuccess)
             {
                 VillaNumberDTO model = JsonConvert.DeserializeObject<VillaNumberDTO>(Convert.ToString(response.Result));
-                return View(model);
+                vm.VillaNumber = model;
+            }
+
+            response = await _villaService.GetAllAsync<ApiResponse>();
+            if (response != null && response.IsSuccess)
+            {
+                vm.VillaList = JsonConvert.DeserializeObject<List<VillaDTO>>(Convert.ToString(response.Result))
+                    .Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() });
+                return View(vm);
             }
             return NotFound();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteVillaNumber(VillaNumberDTO model)
+        public async Task<IActionResult> DeleteVillaNumber(VillaNumberDeleteVM model)
         {
-            var response = await _villaNumberService.DeleteAsync<ApiResponse>(model.VillaNo);
+            var response = await _villaNumberService.DeleteAsync<ApiResponse>(model.VillaNumber.VillaNo);
             if (response != null && response.IsSuccess)
             {
                 TempData["success"] = "Villa deleted successfully";
