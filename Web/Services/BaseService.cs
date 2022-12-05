@@ -20,7 +20,7 @@ namespace Web.Services
             try
             {
                 var client = HttpClient.CreateClient();
-                HttpRequestMessage message = new HttpRequestMessage();
+                HttpRequestMessage message = new();
                 message.Headers.Add("Accept", "application/json");
                 message.RequestUri = new Uri(apiRequest.Url);
                 if (apiRequest.Data != null)
