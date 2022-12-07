@@ -1,16 +1,11 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System.Data;
 using Web.Models;
 using Web.Models.Dto.Villa;
-using Web.Services.IServices;
 
 namespace Web.Controllers
 {
-	public class VillaController : BaseController
+    public class VillaController : BaseController
 	{
 		public VillaController(IServiceProvider provider) : base(provider)
 		{
