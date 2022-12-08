@@ -13,6 +13,7 @@ namespace Main.Data
         #region 對應資料庫Table名稱
         public DbSet<Villa> Villas { get; set; }
         public DbSet<VillaNumber> VillaNumbers { get; set; }
+        public DbSet<User> Users { get; set; }
         #endregion
 
         // Seed Test Data for Villa
