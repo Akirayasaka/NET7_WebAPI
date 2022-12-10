@@ -3,7 +3,7 @@ using Main.Models.Dto.Login;
 
 namespace Main.Repository.IRepository
 {
-    public interface IUserRepository
+    public interface IUserRepository : IRepository<User>
     {
         bool IsUniqueUser(string username);
         Task<LoginResponseDTO> Login(LoginRequestDTO loginRequestDTO);
