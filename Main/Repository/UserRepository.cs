@@ -8,9 +8,11 @@ namespace Main.Repository
     public class UserRepository : Repository<User>, IUserRepository
     {
         private readonly ApplicationDbContext _db;
-        public UserRepository(ApplicationDbContext db) : base(db)
+        private string secretKey;
+        public UserRepository(ApplicationDbContext db, IConfiguration configuration) : base(db)
         {
             _db = db;
+            secretKey = configuration.GetValue<string>("ApiSettings:Secret");
         }
 
         public bool IsUniqueUser(string username)
@@ -21,7 +23,14 @@ namespace Main.Repository
 
         public async Task<LoginResponseDTO> Login(LoginRequestDTO loginRequestDTO)
         {
-            throw new NotImplementedException();
+            var user = _db.Users.FirstOrDefault(x => x.UserName.ToLower() == loginRequestDTO.UserName.ToLower() && x.Password == loginRequestDTO.Password);
+            if (user == null)
+            {
+                return null;
+            }
+
+            // if user was found, generate JWT Token
+
         }
 
         public async Task<User> Register(RegisterationRequestDTO registerationRequestDTO)
