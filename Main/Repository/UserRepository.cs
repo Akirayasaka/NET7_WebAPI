@@ -12,7 +12,7 @@ namespace Main.Repository
     public class UserRepository : Repository<User>, IUserRepository
     {
         private readonly ApplicationDbContext _db;
-        private string secretKey;
+        private readonly string secretKey;
         public UserRepository(ApplicationDbContext db, IConfiguration configuration) : base(db)
         {
             _db = db;
@@ -33,7 +33,7 @@ namespace Main.Repository
                 return null;
             }
 
-            // if user was found, generate JWT Token
+            #region if user was found, generate JWT Token
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(secretKey);
 
@@ -49,6 +49,8 @@ namespace Main.Repository
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
+            #endregion
+
             LoginResponseDTO loginResponseDTO = new()
             {
                 Token = tokenHandler.WriteToken(token),
