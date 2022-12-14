@@ -30,7 +30,11 @@ namespace Main.Repository
             var user = _db.Users.FirstOrDefault(x => x.UserName.ToLower() == loginRequestDTO.UserName.ToLower() && x.Password == loginRequestDTO.Password);
             if (user == null)
             {
-                return null;
+                return new LoginResponseDTO()
+                {
+                    Token = string.Empty,
+                    User = null
+                };
             }
 
             #region if user was found, generate JWT Token
