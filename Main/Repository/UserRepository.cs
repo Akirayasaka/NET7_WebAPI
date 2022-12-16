@@ -21,13 +21,13 @@ namespace Main.Repository
 
         public bool IsUniqueUser(string username)
         {
-            var user = _db.Users.FirstOrDefault(x => x.UserName == username);
+            User user = _db.Users.FirstOrDefault(x => x.UserName == username);
             return user == null;
         }
 
         public async Task<LoginResponseDTO> Login(LoginRequestDTO loginRequestDTO)
         {
-            var user = _db.Users.FirstOrDefault(x => x.UserName.ToLower() == loginRequestDTO.UserName.ToLower() && x.Password == loginRequestDTO.Password);
+            User user = _db.Users.FirstOrDefault(x => x.UserName.ToLower() == loginRequestDTO.UserName.ToLower() && x.Password == loginRequestDTO.Password);
             if (user == null)
             {
                 return new LoginResponseDTO()

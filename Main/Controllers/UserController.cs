@@ -1,4 +1,5 @@
-﻿using Main.Models.Dto.Login;
+﻿using Main.Models;
+using Main.Models.Dto.Login;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -13,7 +14,7 @@ namespace Main.Controllers
         [HttpPost]
         public async Task<IActionResult> Login([FromBody] LoginRequestDTO model)
         {
-            var loginResponse = await _unitOfWork.User.Login(model);
+            LoginResponseDTO loginResponse = await _unitOfWork.User.Login(model);
             if (loginResponse.User == null || string.IsNullOrEmpty(loginResponse.Token))
             {
                 _response.IsSuccess = false;
@@ -39,7 +40,7 @@ namespace Main.Controllers
                 return BadRequest(_response);
             }
 
-            var user = _unitOfWork.User.Register(model);
+            User user = await _unitOfWork.User.Register(model);
             if (user == null)
             {
                 _response.IsSuccess = false;
