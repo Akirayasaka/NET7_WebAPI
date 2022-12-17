@@ -7,9 +7,8 @@ namespace Main.Repository
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext _db;
-        private readonly IConfiguration _configuration;
 
-        public UnitOfWork(ApplicationDbContext db)
+        public UnitOfWork(ApplicationDbContext db, IConfiguration _configuration)
         {
             _db = db;
             Villa = new VillaRepository(_db);

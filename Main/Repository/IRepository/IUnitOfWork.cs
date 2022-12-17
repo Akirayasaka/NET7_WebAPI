@@ -4,7 +4,6 @@
     {
         IVillaRepository Villa { get; }
         IVillaNumberRepository VillaNumber { get; }
-
         IUserRepository User { get; }
         void Save();
     }
