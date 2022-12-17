@@ -11,7 +11,6 @@ namespace Main.Controllers
     {
         public VillaNumberAPIController(IServiceProvider provider) : base(provider) { }
 
-
         [HttpGet]
         public async Task<ActionResult<ApiResponse>> GetVillaNumbers()
         {

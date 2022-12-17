@@ -11,8 +11,8 @@ namespace Main.Controllers
     {
         public UserController(IServiceProvider provider) : base(provider) { }
 
-        [HttpPost]
-        public async Task<IActionResult> Login([FromBody] LoginRequestDTO model)
+        [HttpPost("Login")]
+        public async Task<ActionResult<ApiResponse>> Login([FromBody] LoginRequestDTO model)
         {
             LoginResponseDTO loginResponse = await _unitOfWork.User.Login(model);
             if (loginResponse.User == null || string.IsNullOrEmpty(loginResponse.Token))
@@ -28,8 +28,8 @@ namespace Main.Controllers
             return Ok(_response);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Register([FromBody] RegisterationRequestDTO model)
+        [HttpPost("Register")]
+        public async Task<ActionResult<ApiResponse>> Register([FromBody] RegisterationRequestDTO model)
         {
             bool userExsist = _unitOfWork.User.IsUniqueUser(model.UserName);
             if (!userExsist)
