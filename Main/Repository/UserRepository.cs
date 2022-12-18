@@ -55,6 +55,8 @@ namespace Main.Repository
             var token = tokenHandler.CreateToken(tokenDescriptor);
             #endregion
 
+            user.Password = $"********";
+
             LoginResponseDTO loginResponseDTO = new()
             {
                 Token = tokenHandler.WriteToken(token),
