@@ -1,5 +1,6 @@
 ﻿using Main.Models;
 using Main.Models.Dto.Villa;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -63,6 +64,7 @@ namespace Main.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -111,6 +113,7 @@ namespace Main.Controllers
         }
 
         [HttpDelete("{id:int}", Name = "DeleteVilla")]
+        [Authorize]
         public async Task<ActionResult<ApiResponse>> DeleteVilla(int id)
         {
             try
@@ -138,6 +141,7 @@ namespace Main.Controllers
 
         // Put: For update multiple properties
         [HttpPut("{id:int}", Name = "UpdateVilla")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
